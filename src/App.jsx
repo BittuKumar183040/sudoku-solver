@@ -1,20 +1,32 @@
 import React from 'react'
 import Martix from './Martix'
 import { useEffect, useState } from 'react';
+import GUI from 'lil-gui';
+
+const initialMatrix = [
+  [0, 1, 7, 6, 0, 0, 0, 3, 4],
+  [2, 8, 9, 0, 0, 4, 0, 0, 0],
+  [3, 4, 6, 2, 0, 5, 0, 9, 0],
+  [6, 0, 2, 0, 0, 0, 0, 1, 0],
+  [0, 3, 8, 0, 0, 6, 0, 4, 7],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 9, 0, 0, 0, 0, 0, 7, 8],
+  [7, 0, 3, 4, 0, 0, 5, 6, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0]
+]
+
+const config = {
+  timer: 10
+}
 
 function App() {
 
-  const [matrixData, setMatrixData] = useState([
-    [0, 8, 1, 2, 7, 0, 9, 0, 4],
-    [6, 0, 0, 1, 9, 5, 0, 0, 0],
-    [0, 9, 8, 0, 0, 0, 0, 6, 0],
-    [8, 0, 0, 0, 6, 0, 0, 0, 3],
-    [4, 0, 0, 8, 0, 3, 0, 0, 1],
-    [3, 0, 0, 0, 2, 0, 0, 0, 6],
-    [0, 6, 0, 0, 0, 0, 2, 8, 0],
-    [0, 0, 2, 4, 1, 9, 0, 0, 2],
-    [0, 5, 0, 0, 8, 0, 0, 7, 9]
-  ]);
+  const [matrixData, setMatrixData] = useState(initialMatrix);
+  const gui = new GUI();
+
+  gui.add(config, "timer", 0, 100, 10).name("Timer (ms)").onChange(value => {
+    config.timer = Math.max(0, Math.floor(value));
+  });
 
   const rowCheck = (matrix, row, num) => {
     let isValid = true;
@@ -50,18 +62,38 @@ function App() {
     return isValid;
   }
 
-  useEffect(() => {
-    const row = 0
-    const col = 0
-    const num = 1
-    let isValid = []
-    isValid.push(rowCheck(matrixData, row, num))
-    isValid.push(colCheck(matrixData, col, num))
-    isValid.push(boxCheck(matrixData, row, col, num))
-    const allValid = isValid.every((val) => val === true);
-    console.log('All checks passed:', allValid);
-  }, [])
+  const solveSudoku = async (rawBoard) => {
+    let board = rawBoard;
+    for (let row = 0; row < 9; row++) {
+      for (let col = 0; col < 9; col++) {
+        if (board[row][col] === 0) {
+          for (let num = 1; num <= 9; num++) {
+            if (
+              rowCheck(board, row, num) &&
+              colCheck(board, col, num) &&
+              boxCheck(board, row - (row % 3), col - (col % 3), num)
+            ) {
+              board[row][col] = num;
+              setMatrixData([...board]);
+              await new Promise(resolve => setTimeout(resolve, config.timer));
 
+              if (await solveSudoku(board)) return true;
+              board[row][col] = 0;
+
+              setMatrixData([...board]);
+              await new Promise(resolve => setTimeout(resolve, config.timer));
+            }
+          }
+          return false;
+        }
+      }
+    }
+    return true;
+  };
+
+  const handleSolveBtn = () => {
+    solveSudoku([...matrixData]);
+  }
 
   return (
     <div className='bg-slate-900 space-y-2 text-white h-screen flex flex-col items-center justify-center'>
@@ -69,6 +101,10 @@ function App() {
       <p className='text-xs font-semibold'>A simple sudoku solver using backtracking algorithm</p>
       <p className='text-xs font-semibold'>Made with React and Tailwind CSS</p>
       <Martix matrixData={matrixData} setMatrixData={setMatrixData} />
+      <button onClick={handleSolveBtn} className=' active:scale-95 mt-4 cursor-pointer flex items-center space-x-2 p-2 px-6 bg-slate-800 rounded-md hover:bg-slate-700 transition-all duration-200'>
+        <img src='/solve.svg' alt='solve' className='w-4 h-4 pointer-events-none' />
+        <p>SOLVE</p>
+      </button>
     </div>
   )
 }

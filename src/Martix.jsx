@@ -7,6 +7,7 @@ const Martix = ({ matrixData, setMatrixData }) => {
     const newMatrix = [...matrixData]
     newMatrix[rowIndex][colIndex] = value
     setMatrixData(newMatrix)
+    console.log('matricChecked')
   }
 
   return (
@@ -21,14 +22,16 @@ const Martix = ({ matrixData, setMatrixData }) => {
                     <input
                       type='text'
                       defaultValue={val === 0 ? '' : val}
-                      disabled={val !== 0}
+                      // disabled={val !== 0}
                       style={{ width: '40px', height: '40px', textAlign: 'center' }}
                       className='bg-gray-900 text-white border rounded-md focus:outline-none 
                      disabled:text-red-400 disabled:'
                       onInput={(e) => {
-                        const value = e.target.value;
+                        let value = e.target.value;
                         if (!/^[1-9]$/.test(value)) {
                           e.target.value = value.slice(0, 1).replace(/[^1-9]/g, '');
+                          value = '';
+                        } else {
                           handleMatrixChange(rowIndex, colIndex, parseInt(e.target.value));
                         }
                       }}
