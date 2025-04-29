@@ -84,10 +84,11 @@ const Solver= ({ matrixInitial, onBack })=> {
 
   useEffect(()=>{
     const gui = new GUI();
-    gui.add(config, "timer", 0, 100, 10).name("Visualization Speed (ms)").onChange(value => {
+    gui.title("Sudoku Visulization Controls")
+    gui.add(config, "timer", 0, 100, 10).name("Solver Speed (ms)").onChange(value => {
       config.timer = Math.max(0, Math.floor(value));
     });
-    return () => {};
+    return () => {gui.destroy()};
   },[])
 
   const handleSolveBtn = () => {
