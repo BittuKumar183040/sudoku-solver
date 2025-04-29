@@ -84,7 +84,12 @@ const Solver= ({ matrixInitial, onBack })=> {
 
   useEffect(()=>{
     const gui = new GUI();
-    gui.title("Sudoku Visulization Controls")
+    gui.title("Sudoku Visulization Controls");
+    gui.domElement.querySelector('.title').style.color = '#000000';
+    gui.domElement.querySelector('.title').style.background = '#ddd';
+    gui.domElement.style.background = '#ffffff';
+    gui.domElement.style.color = '#000000';
+    gui.domElement.style.borderRadius = '5px';
     gui.add(config, "timer", 0, 100, 10).name("Solver Speed (ms)").onChange(value => {
       config.timer = Math.max(0, Math.floor(value));
     });
