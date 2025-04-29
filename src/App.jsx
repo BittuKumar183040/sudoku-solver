@@ -1,111 +1,60 @@
 import React from 'react'
-import Martix from './Martix'
-import { useEffect, useState } from 'react';
-import GUI from 'lil-gui';
+import Solver from './Solver'
+import matrixInitial from './data/tempelate.json'
+import { useState } from 'react';
 
-const initialMatrix = [
-  [0, 1, 7, 6, 0, 0, 0, 3, 4],
-  [2, 8, 9, 0, 0, 4, 0, 0, 0],
-  [3, 4, 6, 2, 0, 5, 0, 9, 0],
-  [6, 0, 2, 0, 0, 0, 0, 1, 0],
-  [0, 3, 8, 0, 0, 6, 0, 4, 7],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 9, 0, 0, 0, 0, 0, 7, 8],
-  [7, 0, 3, 4, 0, 0, 5, 6, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0]
-]
+const App = () => {
+  const [showCustom, setShowCustom] = useState(false);
+  const [sudoku, setSudoku] = useState(null)
 
-const config = {
-  timer: 10
-}
+  const renderGrid = (matrix, disabled=true) => (
+    <div className="grid grid-cols-9 gap-[1px] bg-gray-400 p-1 rounded-md">
 
-function App() {
-
-  const [matrixData, setMatrixData] = useState(initialMatrix);
-  const gui = new GUI();
-
-  gui.add(config, "timer", 0, 100, 10).name("Timer (ms)").onChange(value => {
-    config.timer = Math.max(0, Math.floor(value));
-  });
-
-  const rowCheck = (matrix, row, num) => {
-    let isValid = true;
-    matrix[row].forEach((val) => {
-      if (val === num) {
-        isValid = false
-      }
-    })
-    return isValid;
-  }
-
-  const colCheck = (matrix, col, num) => {
-    let isValid = true;
-    matrix.forEach((arr) => {
-      if (arr[col] === num) {
-        isValid = false
-      }
-    })
-    return isValid;
-  }
-
-  const boxCheck = (matrix, row, col, num) => {
-    let isValid = true;
-    matrix.forEach((arr, rowIndex) => {
-      arr.forEach((val, colIndex) => {
-        if (rowIndex >= row && rowIndex < row + 3 && colIndex >= col && colIndex < col + 3) {
-          if (val === num) {
-            isValid = false
-          }
-        }
-      })
-    })
-    return isValid;
-  }
-
-  const solveSudoku = async (rawBoard) => {
-    let board = rawBoard;
-    for (let row = 0; row < 9; row++) {
-      for (let col = 0; col < 9; col++) {
-        if (board[row][col] === 0) {
-          for (let num = 1; num <= 9; num++) {
-            if (
-              rowCheck(board, row, num) &&
-              colCheck(board, col, num) &&
-              boxCheck(board, row - (row % 3), col - (col % 3), num)
-            ) {
-              board[row][col] = num;
-              setMatrixData([...board]);
-              await new Promise(resolve => setTimeout(resolve, config.timer));
-
-              if (await solveSudoku(board)) return true;
-              board[row][col] = 0;
-
-              setMatrixData([...board]);
-              await new Promise(resolve => setTimeout(resolve, config.timer));
-            }
-          }
-          return false;
-        }
-      }
-    }
-    return true;
-  };
-
-  const handleSolveBtn = () => {
-    solveSudoku([...matrixData]);
-  }
+      {matrix.map((arr, idx) => (
+        arr.map((val, idx) => (
+          <input
+            key={idx}
+            type="text"
+            disabled={disabled}
+            value={val}
+            maxLength="1"
+            style={{pointerEvents:disabled ? "none" : "auto"}}
+            className="size-5 lg:size-8 text-xs text-center text-gray-500 lg:text-xl font-bold bg-white focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+        ))
+      ))}
+    </div>
+  );
 
   return (
-    <div className='bg-slate-900 space-y-2 text-white h-screen flex flex-col items-center justify-center'>
-      <h1 className='text-2xl font-bold'>Sudoku Solver</h1>
-      <p className='text-xs font-semibold'>A simple sudoku solver using backtracking algorithm</p>
-      <p className='text-xs font-semibold'>Made with React and Tailwind CSS</p>
-      <Martix matrixData={matrixData} setMatrixData={setMatrixData} />
-      <button onClick={handleSolveBtn} className=' active:scale-95 mt-4 cursor-pointer flex items-center space-x-2 p-2 px-6 bg-slate-800 rounded-md hover:bg-slate-700 transition-all duration-200'>
-        <img src='/solve.svg' alt='solve' className='w-4 h-4 pointer-events-none' />
-        <p>SOLVE</p>
-      </button>
-    </div>
+    <section className="min-h-screen space-y-10 flex flex-col items-center justify-center bg-gradient-to-tr from-purple-400 via-pink-300 to-blue-400 p-6">
+      <h1 className="text-4xl md:text-6xl font-extrabold bg-gradient-to-r from-yellow-100 via-pink-300 to-purple-400 bg-clip-text text-transparent mb-10 text-center drop-shadow-lg">
+        Sudoku Solver
+      </h1>
+      <hr className=' w-1/2 border-white' />
+
+      {sudoku ? <Solver matrixInitial={sudoku} onBack={()=>setSudoku(null)} /> :
+      <>
+        <div className=" select-none flex flex-wrap gap-6 justify-center">
+          {matrixInitial.map((matrix, idx) => (
+            <button
+              key={idx}
+              onClick={()=>setSudoku(matrix)}
+              className=" cursor-pointer bg-white/20 opacity-70 backdrop-blur-md p-2 rounded-2xl shadow-2xl hover:shadow hover:opacity-100 transition-all duration-300"
+            >
+              {renderGrid(matrix)}
+            </button>
+          ))}
+        </div>
+        <div className=' flex gap-10 '>
+          <button onClick={()=>setShowCustom(!showCustom)} className=' cursor-pointer active:scale-95 active:shadow transition-all rounded-md border border-gray-200 shadow-md bg-gradient-to-br from-purple-400 via-pink-300 to-blue-400'>
+            <p className=' p-1.5 px-7 font-semibold text-white'>Create Custom</p>
+          </button>
+        </div>
+      </>
+      }
+      
+    </section>
   )
 }
 

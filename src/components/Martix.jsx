@@ -1,5 +1,4 @@
 import React from 'react'
-import { useState } from 'react'
 
 const Martix = ({ matrixData, setMatrixData }) => {
 
@@ -20,12 +19,11 @@ const Martix = ({ matrixData, setMatrixData }) => {
                 arr.map((val, colIndex) => (
                   <td key={val + "" + colIndex}>
                     <input
-                      type='text'
+                      type="text"
                       defaultValue={val === 0 ? '' : val}
-                      // disabled={val !== 0}
+                      disabled={true}
                       style={{ width: '40px', height: '40px', textAlign: 'center' }}
-                      className='bg-gray-900 text-white border rounded-md focus:outline-none 
-                     disabled:text-red-400 disabled:'
+                      className="bg-gray-100/50 text-white border rounded-md focus:outline-none disabled:text-red-400"
                       onInput={(e) => {
                         let value = e.target.value;
                         if (!/^[1-9]$/.test(value)) {
