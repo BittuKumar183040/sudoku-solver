@@ -1,5 +1,5 @@
 {
-  "name": "suduko_solver",
+  "name": "sudoku_solver",
   "private": true,
   "version": "0.1.0",
   "type": "module",

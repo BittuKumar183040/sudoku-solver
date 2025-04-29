@@ -50,7 +50,7 @@ const App = () => {
         </div>
         <div className=' flex gap-10 '>
           <button onClick={()=>setShowCustom(!showCustom)} className=' cursor-pointer active:scale-95 active:shadow transition-all rounded-md border border-gray-200 shadow-md bg-gradient-to-br from-purple-400 via-pink-300 to-blue-400'>
-            <p className=' p-1.5 px-7 font-semibold text-white'>Open Suduko Builder</p>
+            <p className=' p-1.5 px-7 font-semibold text-white'>Open Sudoku Builder</p>
           </button>
         </div>
       </>
