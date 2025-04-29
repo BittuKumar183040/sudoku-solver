@@ -1,12 +1,11 @@
 import React from 'react'
 
-const Martix = ({ matrixData, setMatrixData }) => {
+const Martix = ({ matrixData, setMatrixData, disabled=true }) => {
 
   const handleMatrixChange = (rowIndex, colIndex, value) => {
     const newMatrix = [...matrixData]
     newMatrix[rowIndex][colIndex] = value
     setMatrixData(newMatrix)
-    console.log('matricChecked')
   }
 
   return (
@@ -21,7 +20,7 @@ const Martix = ({ matrixData, setMatrixData }) => {
                     <input
                       type="text"
                       defaultValue={val === 0 ? '' : val}
-                      disabled={true}
+                      disabled={disabled}
                       style={{ width: '40px', height: '40px', textAlign: 'center' }}
                       className="bg-gray-100/50 text-white border rounded-md focus:outline-none disabled:text-red-400"
                       onInput={(e) => {

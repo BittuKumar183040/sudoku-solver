@@ -2,6 +2,8 @@ import React from 'react'
 import Solver from './Solver'
 import matrixInitial from './data/tempelate.json'
 import { useState } from 'react';
+import Custom from './components/Custom';
+import Title from './components/Title';
 
 const App = () => {
   const [showCustom, setShowCustom] = useState(false);
@@ -25,14 +27,14 @@ const App = () => {
       ))}
     </div>
   );
+  
+  const onBack = () => {
+    setShowCustom(false)
+  }
 
   return (
     <section className="min-h-screen space-y-10 flex flex-col items-center justify-center bg-gradient-to-tr from-purple-400 via-pink-300 to-blue-400 p-6">
-      <h1 className="text-4xl md:text-6xl font-extrabold bg-gradient-to-r from-yellow-100 via-pink-300 to-purple-400 bg-clip-text text-transparent mb-10 text-center drop-shadow-lg">
-        Sudoku Solver
-      </h1>
-      <hr className=' w-1/2 border-white' />
-
+      <Title />
       {sudoku ? <Solver matrixInitial={sudoku} onBack={()=>setSudoku(null)} /> :
       <>
         <div className=" select-none flex flex-wrap gap-6 justify-center">
@@ -48,11 +50,13 @@ const App = () => {
         </div>
         <div className=' flex gap-10 '>
           <button onClick={()=>setShowCustom(!showCustom)} className=' cursor-pointer active:scale-95 active:shadow transition-all rounded-md border border-gray-200 shadow-md bg-gradient-to-br from-purple-400 via-pink-300 to-blue-400'>
-            <p className=' p-1.5 px-7 font-semibold text-white'>Create Custom</p>
+            <p className=' p-1.5 px-7 font-semibold text-white'>Open Suduko Builder</p>
           </button>
         </div>
       </>
       }
+      {showCustom && <Custom onBack={onBack}/>}
+      
       
     </section>
   )

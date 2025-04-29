@@ -5,14 +5,15 @@ import { Loader } from 'lucide-react';
 import { PackageCheck } from 'lucide-react';
 import { ListRestart } from 'lucide-react';
 import { useEffect } from 'react';
-import { ArrowLeftSquare } from 'lucide-react';
+import BackBtn from './components/BackBtn';
 
 const config = {
   timer: 10
 }
 
-const Solver= ({ matrixInitial, onBack })=> {
+const Solver = ({ matrixInitial, setMatrixInputData, onBack, disabled=true })=> {
   const [matrixData, setMatrixData] = useState(matrixInitial.map(row=>[...row]));
+  const [disabledField, setDisabledField] = useState(disabled)
   const [status, setStatus] = useState(0)
   const terminate = useRef(false)
 
@@ -99,24 +100,21 @@ const Solver= ({ matrixInitial, onBack })=> {
   const handleSolveBtn = () => {
     terminate.current = false;
     setStatus(1)
+    setDisabledField(true)
     solveSudoku([...matrixData]);
   }
 
   const handleTerminate = () => {
-    console.log("termination initaled")
     terminate.current = true;
+    setDisabledField(false)
     setMatrixData(matrixInitial);
     setStatus(0);
   }
 
   return (
     <div className='text-white flex flex-col items-center justify-center'>
-      <div className=' w-full'>
-        <button onClick={onBack} className=' -translate-x-1/2 cursor-pointer flex gap-2 text-gray-200 shadow-md justify-evenly bg-gray-800 opacity-90 rounded-md text-md items-center w-fit p-1 px-2 pl-1'>
-          <ArrowLeftSquare/><span>Back</span>
-        </button>
-      </div>
-      <Martix matrixData={matrixData} setMatrixData={setMatrixData} />
+      <BackBtn onClick={onBack} />
+      <Martix matrixData={matrixData} setMatrixData={setMatrixInputData} disabled={disabledField} />
       <div className=' flex items-center gap-2 mt-4'>
         {status === 0 ?
           <button onClick={handleSolveBtn} className=' flex items-center justify-between pl-6 cursor-pointer active:scale-95 active:shadow transition-all rounded-md border border-gray-200 shadow-md bg-gradient-to-br from-purple-400 via-pink-300 to-blue-400'>
