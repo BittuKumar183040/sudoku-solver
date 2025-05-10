@@ -13,10 +13,9 @@ const config = {
 
 const Solver = ({ matrixInitial, setMatrixInputData, onBack, disabled=true })=> {
   const [matrixData, setMatrixData] = useState(matrixInitial.map(row=>[...row]));
-  const [disabledField, setDisabledField] = useState(disabled)
-  const [status, setStatus] = useState(0)
-  const terminate = useRef(false)
-
+  const [disabledField, setDisabledField] = useState(disabled);
+  const [status, setStatus] = useState(0);
+  const terminate = useRef(false);
 
   const rowCheck = (matrix, row, num) => {
     let isValid = true;
@@ -94,7 +93,9 @@ const Solver = ({ matrixInitial, setMatrixInputData, onBack, disabled=true })=> 
     gui.add(config, "timer", 0, 100, 10).name("Solver Speed (ms)").onChange(value => {
       config.timer = Math.max(0, Math.floor(value));
     });
-    return () => {gui.destroy()};
+    return () => {
+      gui.destroy()
+    };
   },[])
 
   const handleSolveBtn = () => {
