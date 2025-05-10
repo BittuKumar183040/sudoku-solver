@@ -6,8 +6,9 @@ const Field = ({rowIndex, colIndex, val, disabled, handleMatrixChange}) => {
   const appendValue = (e) => {
     
     if(disabled) return;
-    if (value >= 9) {
+    if (value.current >= 9) {
       value.current = 0;
+      e.target.innerText = ''
       return;
     }
 
